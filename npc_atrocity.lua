@@ -13,9 +13,9 @@ ENT.PhysgunDisabled = true
 ENT.AutomaticFrameAdvance = false
 -- REMINDER: sounds MUST be at a bitrate of 44100 HZ. If they are not, then the sound will not play.
 ENT.TauntSounds = {
-	Sound("npc_obunga/taunt.mp3"),
+	Sound("npc_atrocity/taunt.mp3"),
 }
-local chaseMusic = Sound("npc_obunga/obunga.mp3")
+local chaseMusic = Sound("npc_atrocity/atrocity.mp3")
 
 local workshopID = "174117071"
 
@@ -23,74 +23,74 @@ local IsValid = IsValid
 
 if SERVER then -- SERVER --
 
-local npc_obunga_acquire_distance =
-	CreateConVar("npc_obunga_acquire_distance", 2500, FCVAR_NONE,
-	"The maximum distance at which obunga will chase a target.")
+local npc_atrocity_acquire_distance =
+	CreateConVar("npc_atrocity_acquire_distance", 2500, FCVAR_NONE,
+	"The maximum distance at which atrocity will chase a target.")
 
-local npc_obunga_spawn_protect =
-	CreateConVar("npc_obunga_spawn_protect", 1, FCVAR_NONE,
-	"If set to 1, obunga will not target players or hide within 200 units of \z
+local npc_atrocity_spawn_protect =
+	CreateConVar("npc_atrocity_spawn_protect", 1, FCVAR_NONE,
+	"If set to 1, atrocity will not target players or hide within 200 units of \z
 	a spawn point.")
 
-local npc_obunga_attack_distance =
-	CreateConVar("npc_obunga_attack_distance", 80, FCVAR_NONE,
-	"The reach of obunga's attack.")
+local npc_atrocity_attack_distance =
+	CreateConVar("npc_atrocity_attack_distance", 80, FCVAR_NONE,
+	"The reach of atrocity's attack.")
 
-local npc_obunga_attack_interval =
-	CreateConVar("npc_obunga_attack_interval", 0.2, FCVAR_NONE,
-	"The delay between obunga's attacks.")
+local npc_atrocity_attack_interval =
+	CreateConVar("npc_atrocity_attack_interval", 0.2, FCVAR_NONE,
+	"The delay between atrocity's attacks.")
 
-local npc_obunga_attack_force =
-	CreateConVar("npc_obunga_attack_force", 800, FCVAR_NONE,
-	"The physical force of obunga's attack. Higher values throw things \z
+local npc_atrocity_attack_force =
+	CreateConVar("npc_atrocity_attack_force", 800, FCVAR_NONE,
+	"The physical force of atrocity's attack. Higher values throw things \z
 	farther.")
 
-local npc_obunga_smash_props =
-	CreateConVar("npc_obunga_smash_props", 1, FCVAR_NONE,
-	"If set to 1, obunga will punch through any props placed in their way.")
+local npc_atrocity_smash_props =
+	CreateConVar("npc_atrocity_smash_props", 1, FCVAR_NONE,
+	"If set to 1, atrocity will punch through any props placed in their way.")
 
-local npc_obunga_allow_jump =
-	CreateConVar("npc_obunga_allow_jump", 1, FCVAR_NONE,
-	"If set to 1, obunga will be able to jump.")
+local npc_atrocity_allow_jump =
+	CreateConVar("npc_atrocity_allow_jump", 1, FCVAR_NONE,
+	"If set to 1, atrocity will be able to jump.")
 
-local npc_obunga_hiding_scan_interval =
-	CreateConVar("npc_obunga_hiding_scan_interval", 3, FCVAR_NONE,
-	"obunga will only seek out hiding places every X seconds. This can be an \z
+local npc_atrocity_hiding_scan_interval =
+	CreateConVar("npc_atrocity_hiding_scan_interval", 3, FCVAR_NONE,
+	"atrocity will only seek out hiding places every X seconds. This can be an \z
 	expensive operation, so it is not recommended to lower this too much. \z
-	However, if distant obungas are not hiding from you quickly enough, you \z
+	However, if distant atrocitys are not hiding from you quickly enough, you \z
 	may consider lowering this a small amount.")
 
-local npc_obunga_hiding_repath_interval =
-	CreateConVar("npc_obunga_hiding_repath_interval", 1, FCVAR_NONE,
-	"The path to obunga's hiding spot will be redetermined every X seconds.")
+local npc_atrocity_hiding_repath_interval =
+	CreateConVar("npc_atrocity_hiding_repath_interval", 1, FCVAR_NONE,
+	"The path to atrocity's hiding spot will be redetermined every X seconds.")
 
-local npc_obunga_chase_repath_interval =
-	CreateConVar("npc_obunga_chase_repath_interval", 0.1, FCVAR_NONE,
-	"The path to and position of obunga's target will be redetermined every \z
+local npc_atrocity_chase_repath_interval =
+	CreateConVar("npc_atrocity_chase_repath_interval", 0.1, FCVAR_NONE,
+	"The path to and position of atrocity's target will be redetermined every \z
 	X seconds.")
 
-local npc_obunga_expensive_scan_interval =
-	CreateConVar("npc_obunga_expensive_scan_interval", 1, FCVAR_NONE,
+local npc_atrocity_expensive_scan_interval =
+	CreateConVar("npc_atrocity_expensive_scan_interval", 1, FCVAR_NONE,
 	"Slightly expensive operations (distance calculations and entity \z
 	searching) will occur every X seconds.")
 
-local npc_obunga_force_download =
-	CreateConVar("npc_obunga_force_download", 1, FCVAR_ARCHIVE,
-	"If set to 1, clients will be forced to download obunga resources \z
+local npc_atrocity_force_download =
+	CreateConVar("npc_atrocity_force_download", 1, FCVAR_ARCHIVE,
+	"If set to 1, clients will be forced to download atrocity resources \z
 	(restart required after changing).\n\z
 	WARNING: If this option is disabled, clients will be unable to see or \z
-	hear obunga!")
+	hear atrocity!")
 
  -- So we don't spam voice TOO much.
 local TAUNT_INTERVAL = 1.2
 local PATH_INFRACTION_TIMEOUT = 5
 
-if npc_obunga_force_download:GetBool() then
+if npc_atrocity_force_download:GetBool() then
 	resource.AddWorkshop(workshopID)
 end
 
-util.AddNetworkString("obunga_nag")
-util.AddNetworkString("obunga_navgen")
+util.AddNetworkString("atrocity_nag")
+util.AddNetworkString("atrocity_navgen")
 
  -- Pathfinding is only concerned with static geometry anyway.
 local trace = {
@@ -124,10 +124,10 @@ local function isPositionExposed(pos)
 	return false
 end
 
-local VECTOR_obunga_HEIGHT = Vector(0, 0, 96)
+local VECTOR_atrocity_HEIGHT = Vector(0, 0, 96)
 local function isPointSuitableForHiding(point)
 	trace.start = point
-	trace.endpos = point + VECTOR_obunga_HEIGHT
+	trace.endpos = point + VECTOR_atrocity_HEIGHT
 	local tr = util.TraceLine(trace)
 
 	return (not tr.Hit)
@@ -158,7 +158,7 @@ local function buildHidingSpotCache()
 		end
 	end
 
-	print(string.format("npc_obunga: found %d suitable (%d unsuitable) hiding \z
+	print(string.format("npc_atrocity: found %d suitable (%d unsuitable) hiding \z
 		places in %d areas over %.2fms!", goodSpots, badSpots, #areas,
 		(SysTime() - rStart) * 1000))
 end
@@ -174,21 +174,21 @@ local function isValidTarget(ent)
 		return ent:Alive()
 	end
 
-	-- Ignore dead NPCs, other obungas, and dummy NPCs.
+	-- Ignore dead NPCs, other atrocitys, and dummy NPCs.
 	local class = ent:GetClass()
 	return (ent:IsNPC()
 		and ent:Health() > 0
-		and class ~= "npc_obunga"
+		and class ~= "npc_atrocity"
 		and not class:find("bullseye"))
 end
 
-hook.Add("PlayerSpawnedNPC", "obungaMissingNavmeshNag", function(ply, ent)
+hook.Add("PlayerSpawnedNPC", "atrocityMissingNavmeshNag", function(ply, ent)
 	if not IsValid(ent) then return end
-	if ent:GetClass() ~= "npc_obunga" then return end
+	if ent:GetClass() ~= "npc_atrocity" then return end
 	if navmesh.GetNavAreaCount() > 0 then return end
 
-	-- Try to explain why obunga isn't working.
-	net.Start("obunga_nag")
+	-- Try to explain why atrocity isn't working.
+	net.Start("atrocity_nag")
 	net.Send(ply)
 end)
 
@@ -197,9 +197,9 @@ local function navEndGenerate()
 	local timeElapsedStr = string.NiceTime(SysTime() - generateStart)
 
 	if not navmesh.IsGenerating() then
-		print("npc_obunga: Navmesh generation completed in " .. timeElapsedStr)
+		print("npc_atrocity: Navmesh generation completed in " .. timeElapsedStr)
 	else
-		print("npc_obunga: Navmesh generation aborted after " .. timeElapsedStr)
+		print("npc_atrocity: Navmesh generation aborted after " .. timeElapsedStr)
 	end
 
 	-- Turn this back off.
@@ -286,7 +286,7 @@ local function navGenerate()
 	addEntitiesToSet(seeds, GAMEMODE.SpawnPoints or {})
 
 	if next(seeds, nil) == nil then
-		print("npc_obunga: Couldn't find any places to seed nav_generate")
+		print("npc_atrocity: Couldn't find any places to seed nav_generate")
 		return false
 	end
 
@@ -302,17 +302,17 @@ local function navGenerate()
 		local tr = util.TraceLine(trace)
 
 		if not tr.StartSolid and tr.Hit then
-			print(string.format("npc_obunga: Adding seed %s at %s", seed, pos))
+			print(string.format("npc_atrocity: Adding seed %s at %s", seed, pos))
 			navmesh.AddWalkableSeed(tr.HitPos, tr.HitNormal)
 		else
-			print(string.format("npc_obunga: Couldn't add seed %s at %s", seed,
+			print(string.format("npc_atrocity: Couldn't add seed %s at %s", seed,
 				pos))
 		end
 	end
 
 	-- The least we can do is ensure they don't have to listen to this noise.
-	for _, obunga in pairs(ents.FindByClass("npc_obunga")) do
-		obunga:Remove()
+	for _, atrocity in pairs(ents.FindByClass("npc_atrocity")) do
+		atrocity:Remove()
 	end
 
 	-- This isn't strictly necessary since we just added EVERY spawnpoint as a
@@ -323,16 +323,16 @@ local function navGenerate()
 
 	if navmesh.IsGenerating() then
 		generateStart = SysTime()
-		hook.Add("ShutDown", "obungaNavGen", navEndGenerate)
+		hook.Add("ShutDown", "atrocityNavGen", navEndGenerate)
 	else
-		print("npc_obunga: nav_generate failed to initialize")
+		print("npc_atrocity: nav_generate failed to initialize")
 		navmesh.ClearWalkableSeeds()
 	end
 
 	return navmesh.IsGenerating()
 end
 
-concommand.Add("npc_obunga_learn", function(ply, cmd, args)
+concommand.Add("npc_atrocity_learn", function(ply, cmd, args)
 	if navmesh.IsGenerating() then
 		return
 	end
@@ -340,9 +340,9 @@ concommand.Add("npc_obunga_learn", function(ply, cmd, args)
 	-- Rcon or single-player only.
 	local isConsole = (ply:EntIndex() == 0)
 	if game.SinglePlayer() then
-		print("npc_obunga: Beginning nav_generate requested by " .. ply:Name())
+		print("npc_atrocity: Beginning nav_generate requested by " .. ply:Name())
 
-		-- Disable expensive computations in single-player. obunga doesn't use
+		-- Disable expensive computations in single-player. atrocity doesn't use
 		-- their results, and it consumes a massive amount of time and CPU.
 		-- We'd do this on dedicated servers as well, except that sv_cheats
 		-- needs to be enabled in order to disable visibility computations.
@@ -352,7 +352,7 @@ concommand.Add("npc_obunga_learn", function(ply, cmd, args)
 		-- Enable developer mode so we can see console messages in the corner.
 		RunConsoleCommand("developer", "1")
 	elseif isConsole then
-		print("npc_obunga: Beginning nav_generate requested by server console")
+		print("npc_atrocity: Beginning nav_generate requested by server console")
 	else
 		return
 	end
@@ -362,7 +362,7 @@ concommand.Add("npc_obunga_learn", function(ply, cmd, args)
 	-- If it fails, only the person who started it needs to know.
 	local recipients = (success and player.GetHumans() or {ply})
 
-	net.Start("obunga_navgen")
+	net.Start("atrocity_navgen")
 		net.WriteBool(success)
 	net.Send(recipients)
 end)
@@ -431,7 +431,7 @@ end
 
 function ENT:GetNearestTarget()
 	-- Only target entities within the acquire distance.
-	local maxAcquireDist = npc_obunga_acquire_distance:GetInt()
+	local maxAcquireDist = npc_atrocity_acquire_distance:GetInt()
 	local maxAcquireDistSqr = maxAcquireDist * maxAcquireDist
 	local myPos = self:GetPos()
 	local acquirableEntities = ents.FindInSphere(myPos, maxAcquireDist)
@@ -445,9 +445,9 @@ function ENT:GetNearestTarget()
 		if not isValidTarget(ent) then continue end
 
 		-- Spawn protection! Ignore players within 200 units of a spawn point
-		-- if `npc_obunga_spawn_protect' = 1.
+		-- if `npc_atrocity_spawn_protect' = 1.
 		--TODO: Only for the first few seconds?
-		if npc_obunga_spawn_protect:GetBool() and ent:IsPlayer()
+		if npc_atrocity_spawn_protect:GetBool() and ent:IsPlayer()
 			and isPointNearSpawn(ent:GetPos(), 200)
 		then
 			continue
@@ -466,7 +466,7 @@ end
 
 --TODO: Giant ugly monolith of a function eww eww eww.
 function ENT:AttackNearbyTargets(radius)
-	local attackForce = npc_obunga_attack_force:GetInt()
+	local attackForce = npc_atrocity_attack_force:GetInt()
 	local hitSource = self:LocalToWorld(self:OBBCenter())
 	local nearEntities = ents.FindInSphere(hitSource, radius)
 	local hit = false
@@ -503,7 +503,7 @@ function ENT:AttackNearbyTargets(radius)
 			end
 
 			local hitDirection = (ent:GetPos() - hitSource):GetNormal()
-			-- Give the player a good whack. obunga means business.
+			-- Give the player a good whack. atrocity means business.
 			-- This is for those with god mode enabled.
 			ent:SetVelocity(hitDirection * attackForce + vector_up * 500)
 
@@ -521,7 +521,7 @@ function ENT:AttackNearbyTargets(radius)
 			-- Hits only count if we dealt some damage.
 			hit = (hit or (newHealth < health))
 		elseif ent:GetMoveType() == MOVETYPE_VPHYSICS then
-			if not npc_obunga_smash_props:GetBool() then continue end
+			if not npc_atrocity_smash_props:GetBool() then continue end
 			if ent:IsVehicle() and IsValid(ent:GetDriver()) then continue end
 
 			-- Knock away any props put in our path.
@@ -625,14 +625,14 @@ function ENT:ClaimHidingSpot(hidingSpot)
 end
 
 local HIGH_JUMP_HEIGHT = 500
-function ENT:AtobungatJumpAtTarget()
+function ENT:AtatrocitytJumpAtTarget()
 	-- No double-jumping.
 	if not self:IsOnGround() then return end
 
 	local targetPos = self.CurrentTarget:GetPos()
 	local xyDistSqr = (targetPos - self:GetPos()):Length2DSqr()
 	local zDifference = targetPos.z - self:GetPos().z
-	local maxAttackDistance = npc_obunga_attack_distance:GetInt()
+	local maxAttackDistance = npc_atrocity_attack_distance:GetInt()
 	if xyDistSqr <= math.pow(maxAttackDistance + 200, 2)
 		and zDifference >= maxAttackDistance
 	then
@@ -692,7 +692,7 @@ function ENT:BehaveUpdate() --TODO: Split this up more. Eww.
 
 	local currentTime = CurTime()
 
-	local scanInterval = npc_obunga_expensive_scan_interval:GetFloat()
+	local scanInterval = npc_atrocity_expensive_scan_interval:GetFloat()
 	if currentTime - self.LastTargetSearch > scanInterval then
 		local target = self:GetNearestTarget()
 
@@ -711,9 +711,9 @@ function ENT:BehaveUpdate() --TODO: Split this up more. Eww.
 		self.LastHidingPlaceScan = 0
 
 		-- Attack anyone nearby while we're rampaging.
-		local attackInterval = npc_obunga_attack_interval:GetFloat()
+		local attackInterval = npc_atrocity_attack_interval:GetFloat()
 		if currentTime - self.LastAttack > attackInterval then
-			local attackDistance = npc_obunga_attack_distance:GetInt()
+			local attackDistance = npc_atrocity_attack_distance:GetInt()
 			if self:AttackNearbyTargets(attackDistance) then
 				if currentTime - self.LastTaunt > TAUNT_INTERVAL then
 					self.LastTaunt = currentTime
@@ -728,7 +728,7 @@ function ENT:BehaveUpdate() --TODO: Split this up more. Eww.
 		end
 
 		-- Recompute the path to the target every so often.
-		local repathInterval = npc_obunga_chase_repath_interval:GetFloat()
+		local repathInterval = npc_atrocity_chase_repath_interval:GetFloat()
 		if currentTime - self.LastPathRecompute > repathInterval then
 			self.LastPathRecompute = currentTime
 			self:RecomputeTargetPath()
@@ -738,14 +738,14 @@ function ENT:BehaveUpdate() --TODO: Split this up more. Eww.
 		self.MovePath:Update(self)
 
 		-- Try to jump at a target in the air.
-		if self:IsOnGround() and npc_obunga_allow_jump:GetBool()
+		if self:IsOnGround() and npc_atrocity_allow_jump:GetBool()
 			and currentTime - self.LastJumpScan >= scanInterval
 		then
-			self:AtobungatJumpAtTarget()
+			self:AtatrocitytJumpAtTarget()
 			self.LastJumpScan = currentTime
 		end
 	else
-		local hidingScanInterval = npc_obunga_hiding_scan_interval:GetFloat()
+		local hidingScanInterval = npc_atrocity_hiding_scan_interval:GetFloat()
 		if currentTime - self.LastHidingPlaceScan >= hidingScanInterval then
 			self.LastHidingPlaceScan = currentTime
 
@@ -755,7 +755,7 @@ function ENT:BehaveUpdate() --TODO: Split this up more. Eww.
 		end
 
 		if self.HidingSpot ~= nil then
-			local hidingInterval = npc_obunga_hiding_repath_interval:GetFloat()
+			local hidingInterval = npc_atrocity_hiding_repath_interval:GetFloat()
 			if currentTime - self.LastPathRecompute >= hidingInterval then
 				self.LastPathRecompute = currentTime
 				self.MovePath:Compute(self, self.HidingSpot.pos)
@@ -819,50 +819,50 @@ end
 
 else -- CLIENT --
 
-local MAT_obunga = Material("npc_obunga/obunga")
-killicon.Add("npc_obunga", "npc_obunga/killicon", color_white)
-language.Add("npc_obunga", "obunga")
+local MAT_atrocity = Material("npc_atrocity/atrocity")
+killicon.Add("npc_atrocity", "npc_atrocity/killicon", color_white)
+language.Add("npc_atrocity", "atrocity")
 
 ENT.RenderGroup = RENDERGROUP_TRANSLUCENT
 
 local developer = GetConVar("developer")
 local function DevPrint(devLevel, msg)
 	if developer:GetInt() >= devLevel then
-		print("npc_obunga: " .. msg)
+		print("npc_atrocity: " .. msg)
 	end
 end
 
 local panicMusic = nil
-local lastPanic = 0 -- The last time we were in music range of a obunga.
+local lastPanic = 0 -- The last time we were in music range of a atrocity.
 
 --TODO: Why don't these flags show up? Bug? Documentation would be lovely.
-local npc_obunga_music_volume =
-	CreateConVar("npc_obunga_music_volume", 1,
+local npc_atrocity_music_volume =
+	CreateConVar("npc_atrocity_music_volume", 1,
 	bit.bor(FCVAR_DEMO, FCVAR_ARCHIVE),
-	"Maximum music volume when being chased by obunga. (0-1, where 0 is muted)")
+	"Maximum music volume when being chased by atrocity. (0-1, where 0 is muted)")
 
--- If another obunga comes in range before this delay is up,
+-- If another atrocity comes in range before this delay is up,
 -- the music will continue where it left off.
 local MUSIC_RESTART_DELAY = 2
 
--- Beyond this distance, obungas do not count to music volume.
+-- Beyond this distance, atrocitys do not count to music volume.
 local MUSIC_CUTOFF_DISTANCE = 1000
 
--- Max volume is achieved when MUSIC_obunga_PANIC_COUNT obungas are this close,
+-- Max volume is achieved when MUSIC_atrocity_PANIC_COUNT atrocitys are this close,
 -- or an equivalent score.
 local MUSIC_PANIC_DISTANCE = 200
 
- -- That's a lot of obunga.
-local MUSIC_obunga_PANIC_COUNT = 8
+ -- That's a lot of atrocity.
+local MUSIC_atrocity_PANIC_COUNT = 8
 
-local MUSIC_obunga_MAX_DISTANCE_SCORE =
-	(MUSIC_CUTOFF_DISTANCE - MUSIC_PANIC_DISTANCE) * MUSIC_obunga_PANIC_COUNT
+local MUSIC_atrocity_MAX_DISTANCE_SCORE =
+	(MUSIC_CUTOFF_DISTANCE - MUSIC_PANIC_DISTANCE) * MUSIC_atrocity_PANIC_COUNT
 
 local function updatePanicMusic()
-	if #ents.FindByClass("npc_obunga") == 0 then
+	if #ents.FindByClass("npc_atrocity") == 0 then
 		-- Whoops. No need to run for now.
 		DevPrint(4, "Halting music timer.")
-		timer.Remove("obungaPanicMusicUpdate")
+		timer.Remove("atrocityPanicMusicUpdate")
 
 		if panicMusic ~= nil then
 			panicMusic:Stop()
@@ -880,7 +880,7 @@ local function updatePanicMusic()
 		end
 	end
 
-	local userVolume = math.Clamp(npc_obunga_music_volume:GetFloat(), 0, 1)
+	local userVolume = math.Clamp(npc_atrocity_music_volume:GetFloat(), 0, 1)
 	if userVolume == 0 or not IsValid(LocalPlayer()) then
 		panicMusic:Stop()
 		return
@@ -889,7 +889,7 @@ local function updatePanicMusic()
 	local totalDistanceScore = 0
 	local nearEntities = ents.FindInSphere(LocalPlayer():GetPos(), 1000)
 	for _, ent in pairs(nearEntities) do
-		if IsValid(ent) and ent:GetClass() == "npc_obunga" then
+		if IsValid(ent) and ent:GetClass() == "npc_atrocity" then
 			local distanceScore = math.max(0, MUSIC_CUTOFF_DISTANCE
 				- LocalPlayer():GetPos():Distance(ent:GetPos()))
 			totalDistanceScore = totalDistanceScore + distanceScore
@@ -897,7 +897,7 @@ local function updatePanicMusic()
 	end
 
 	local musicVolume = math.min(1,
-		totalDistanceScore / MUSIC_obunga_MAX_DISTANCE_SCORE)
+		totalDistanceScore / MUSIC_atrocity_MAX_DISTANCE_SCORE)
 
 	local shouldRestartMusic = (CurTime() - lastPanic >= MUSIC_RESTART_DELAY)
 	if musicVolume > 0 then
@@ -906,7 +906,7 @@ local function updatePanicMusic()
 		end
 
 		if not LocalPlayer():Alive() then
-			-- Quiet down so we can hear obunga taunt us.
+			-- Quiet down so we can hear atrocity taunt us.
 			musicVolume = musicVolume / 4
 		end
 
@@ -929,8 +929,8 @@ end
 
 local REPEAT_FOREVER = 0
 local function startTimer()
-	if not timer.Exists("obungaPanicMusicUpdate") then
-		timer.Create("obungaPanicMusicUpdate", 0.05, REPEAT_FOREVER,
+	if not timer.Exists("atrocityPanicMusicUpdate") then
+		timer.Create("atrocityPanicMusicUpdate", 0.05, REPEAT_FOREVER,
 			updatePanicMusic)
 		DevPrint(4, "Beginning music timer.")
 	end
@@ -949,9 +949,9 @@ end
 
 local DRAW_OFFSET = SPRITE_SIZE / 2 * vector_up
 function ENT:DrawTranslucent()
-	render.SetMaterial(MAT_obunga)
+	render.SetMaterial(MAT_atrocity)
 
-	-- Get the normal vector from obunga to the player's eyes, and then compute
+	-- Get the normal vector from atrocity to the player's eyes, and then compute
 	-- a corresponding projection onto the xy-plane.
 	local pos = self:GetPos() + DRAW_OFFSET
 	local normal = EyePos() - pos
@@ -959,7 +959,7 @@ function ENT:DrawTranslucent()
 	local xyNormal = Vector(normal.x, normal.y, 0)
 	xyNormal:Normalize()
 
-	-- obunga should only look 1/3 of the way up to the player so that they
+	-- atrocity should only look 1/3 of the way up to the player so that they
 	-- don't appear to lay flat from above.
 	local pitch = math.acos(math.Clamp(normal:Dot(xyNormal), -1, 1)) / 3
 	local cos = math.cos(pitch)
@@ -973,12 +973,12 @@ function ENT:DrawTranslucent()
 		color_white, 180)
 end
 
-surface.CreateFont("obungaHUD", {
+surface.CreateFont("atrocityHUD", {
 	font = "Arial",
 	size = 56
 })
 
-surface.CreateFont("obungaHUDSmall", {
+surface.CreateFont("atrocityHUDSmall", {
 	font = "Arial",
 	size = 24
 })
@@ -1023,19 +1023,19 @@ local flavourText = ""
 local lastBracket = 0
 local generateStart = 0
 local function navGenerateHUDOverlay()
-	draw.SimpleTextOutlined("obunga is studying this map.", "obungaHUD",
+	draw.SimpleTextOutlined("atrocity is studying this map.", "atrocityHUD",
 		ScrW() / 2, ScrH() / 2, color_white,
 		TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 2, color_black)
-	draw.SimpleTextOutlined("Please wait...", "obungaHUD",
+	draw.SimpleTextOutlined("Please wait...", "atrocityHUD",
 		ScrW() / 2, ScrH() / 2, color_white,
 		TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM, 2, color_black)
 
 	local elapsed = SysTime() - generateStart
 	local elapsedStr = string_ToHMS(elapsed)
-	draw.SimpleTextOutlined("Time Elapsed:", "obungaHUDSmall",
+	draw.SimpleTextOutlined("Time Elapsed:", "atrocityHUDSmall",
 		ScrW() / 2, ScrH() * 3/4, color_white,
 		TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM, 1, color_black)
-	draw.SimpleTextOutlined(elapsedStr, "obungaHUDSmall",
+	draw.SimpleTextOutlined(elapsedStr, "atrocityHUDSmall",
 		ScrW() / 2, ScrH() * 3/4, color_white,
 		TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 1, color_black)
 
@@ -1045,19 +1045,19 @@ local function navGenerateHUDOverlay()
 		flavourText = table.Random(flavourTexts[math.min(5, textBracket)])
 		lastBracket = textBracket
 	end
-	draw.SimpleTextOutlined(flavourText, "obungaHUDSmall",
+	draw.SimpleTextOutlined(flavourText, "atrocityHUDSmall",
 		ScrW() / 2, ScrH() * 4/5, color_yellow,
 		TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, color_black)
 end
 
-net.Receive("obunga_navgen", function()
+net.Receive("atrocity_navgen", function()
 	local startSuccess = net.ReadBool()
 	if startSuccess then
 		generateStart = SysTime()
 		lastBracket = 0
-		hook.Add("HUDPaint", "obungaNavGenOverlay", navGenerateHUDOverlay)
+		hook.Add("HUDPaint", "atrocityNavGenOverlay", navGenerateHUDOverlay)
 	else
-		Derma_Message("Oh no. obunga doesn't even know where to start with \z
+		Derma_Message("Oh no. atrocity doesn't even know where to start with \z
 		this map.\n\z
 		If you're not running the Sandbox gamemode, switch to that and try \z
 		again.", "Error!")
@@ -1067,7 +1067,7 @@ end)
 local nagMe = true
 
 local function requestNavGenerate()
-	RunConsoleCommand("npc_obunga_learn")
+	RunConsoleCommand("npc_atrocity_learn")
 end
 
 local function stopNagging()
@@ -1075,7 +1075,7 @@ local function stopNagging()
 end
 
 local function navWarning()
-	Derma_Query("It will take a while (possibly hours) for obunga to figure \z
+	Derma_Query("It will take a while (possibly hours) for atrocity to figure \z
 		this map out.\n\z
 		While he's studying it, you won't be able to play,\n\z
 		and the game will appear to have frozen/crashed.\n\z
@@ -1086,30 +1086,30 @@ local function navWarning()
 		"Not right now.", nil)
 end
 
-net.Receive("obunga_nag", function()
+net.Receive("atrocity_nag", function()
 	if not nagMe then return end
 
 	if game.SinglePlayer() then
-		Derma_Query("Uh oh! obunga doesn't know this map.\n\z
+		Derma_Query("Uh oh! atrocity doesn't know this map.\n\z
 			Would you like him to learn it?",
-			"This map is not yet obunga-compatible!",
+			"This map is not yet atrocity-compatible!",
 			"Yes", navWarning,
 			"No", nil,
 			"No. Don't ask again.", stopNagging)
 	else
-		Derma_Query("Uh oh! obunga doesn't know this map. \z
+		Derma_Query("Uh oh! atrocity doesn't know this map. \z
 			He won't be able to move!\n\z
 			Because you're not in a single-player game, he isn't able to \z
 			learn it.\n\z
 			\n\z
-			Ask the server host about teaching this map to obunga.\n\z
+			Ask the server host about teaching this map to atrocity.\n\z
 			\n\z
-			If you ARE the server host, you can run npc_obunga_learn over \z
+			If you ARE the server host, you can run npc_atrocity_learn over \z
 			rcon.\n\z
 			Keep in mind that it may take hours during which you will be \z
 			unable\n\z
 			to play, and THE MAP WILL BE RESTARTED.",
-			"This map is currently not obunga-compatible!",
+			"This map is currently not atrocity-compatible!",
 			"Ok", nil,
 			"Ok. Don't say this again.", stopNagging)
 	end
@@ -1120,9 +1120,9 @@ end
 --
 -- List the NPC as spawnable.
 --
-list.Set("NPC", "npc_obunga", {
-	Name = "obunga",
-	Class = "npc_obunga",
+list.Set("NPC", "npc_atrocity", {
+	Name = "atrocity",
+	Class = "npc_atrocity",
 	Category = "Mason's Nextbots",
 	AdminOnly = false
 })
